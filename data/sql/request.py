@@ -144,3 +144,11 @@ async def check_and_clean_subscriptions():
                 )
             )
             await session.commit()
+
+# async def get_all_tg_id() -> list[int]:
+#     async with async_session() as session:
+#         list_users = await session.execute(
+#             select(User.tg_id)
+#         )
+#         list_users_scalars: list[int] = list_users.scalars().all()
+#         return list_users_scalars

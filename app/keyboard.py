@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 def start_menu(vip: bool):
     keyboard = [
         [InlineKeyboardButton(text="Профиль", callback_data="profile"), 
-         InlineKeyboardButton(text="Модель", callback_data="select_model")]
+         InlineKeyboardButton(text="Модели", callback_data="select_model")]
     ]
     
     if not vip:
@@ -56,3 +56,7 @@ def inline_query_keyboard(tg_id: int):
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🚀 Запустить", callback_data=f"generate_{tg_id}")]
     ])
+
+channel_link = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="💬 Канал", url="https://t.me/grocsneiro")]
+])

@@ -86,7 +86,7 @@ async def subscription_payment(request: Request, bot: Bot = Depends(get_bot)):
         tg_id = int(label_split[2])
 
         await set_subscription(tg_id=tg_id, vip_type=label_split[0], end_time=unix_timestamp, day_limit=label_split[1])
-        await bot.send_message(
+        await bot.edit_message_text(
             chat_id=tg_id,
             text=f"✅ Вы успешно оплатили подписку {label_split[0].capitalize()}.\nПодписка активна до {end_date}."
         )
