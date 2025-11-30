@@ -2,7 +2,7 @@ from functools import cache
 from config import YOOMONEY_AUTHENICITY, BOT_TG
 from datetime import timedelta
 from pydantic import BaseModel
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import Depends, FastAPI, Request, HTTPException
 from aiogram import Bot
 from data.sql.request import set_subscription
 import hashlib
@@ -30,7 +30,7 @@ async def read_root():
     return "Russia will be free"
 
 @fastapi_app.post("/payment")
-async def subscription_payment(request: Request, bot: Bot = get_bot()):
+async def subscription_payment(request: Request, bot: Bot = Depends(get_bot)):
     form_data = await request.form()
     
     # Извлекаем ВСЕ нужные поля, включая обязательные для хеша
