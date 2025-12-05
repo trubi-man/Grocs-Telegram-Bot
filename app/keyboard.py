@@ -41,9 +41,9 @@ subscriptions = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="🔙 Назад", callback_data="back")]
 ])
 
-def payment_star(amount: str | int):
+def payment_keyboard(amount: str | int, is_star: bool = True):
     return InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text=f"Оплатить {amount} ⭐", pay=True)]
+    [InlineKeyboardButton(text=f"Оплатить {amount} {'⭐' if is_star else '\u20BD'}", pay=True)]
 ])
 
 def payment_card(link: str):
@@ -57,6 +57,6 @@ def inline_query_keyboard(tg_id: int):
         [InlineKeyboardButton(text="🚀 Запустить", callback_data=f"generate_{tg_id}")]
     ])
 
-channel_link = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="💬 Канал", url="https://t.me/grocsneiro")]
-])
+# channel_link = InlineKeyboardMarkup(inline_keyboard=[
+#     [InlineKeyboardButton(text="💬 Канал", url="https://t.me/grocsneiro")]
+# ])

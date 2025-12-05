@@ -1,7 +1,7 @@
 from app.handlers.texts import INFO_TEXT
 from data.sql.request import is_register_user, is_vip
 from data.redis.redis_manager import redis_manager
-from app.keyboard import start_menu, channel_link
+from app.keyboard import start_menu
 from aiogram.filters import CommandStart, Command, CommandObject
 from aiogram.types import Message
 from aiogram import Router, Bot
@@ -13,7 +13,7 @@ async def command_start_handler(message: Message):
     is_new_user = await is_register_user(message.from_user.id)
     if is_new_user:
         await message.answer(text="Привет, прочтите о возможностях бота.\n" + INFO_TEXT, parse_mode='HTML', reply_markup=start_menu(False))
-        await message.answer(text="Наш канал:", reply_markup=channel_link)
+        # await message.answer(text="Наш канал:", reply_markup=channel_link)
     else:
         vip = await is_vip(message.from_user.id)
         await message.answer(text=INFO_TEXT, parse_mode='HTML', reply_markup=start_menu(vip))

@@ -8,6 +8,6 @@ class SubscriptionData:
     daily_limit: int
 
 class Subscription(Enum):
-    STANDARD = SubscriptionData("standard", 1, 130)
-    PRO = SubscriptionData("pro", 2, 400)
-    PREMIUM = SubscriptionData("premium", 3, 1000)
+    STANDARD = SubscriptionData("standard", 99, 130)
+    PRO = SubscriptionData("pro", 299, 400)
+    PREMIUM = SubscriptionData("premium", 599, 1000)

@@ -1,6 +1,6 @@
 from aiogram.types import LabeledPrice, Message
 from app.pay.subcription_data import Subscription
-from app.keyboard import payment_star
+from app.keyboard import payment_keyboard
 
 async def create_star_payment(message: Message, subscription: str):
     for sub in Subscription:
@@ -22,5 +22,5 @@ async def create_star_payment(message: Message, subscription: str):
         currency="XTR",
         prices=prices,
         payload=f"subscription:{subscription}:{daily_limit}",
-        reply_markup=payment_star(price)
+        reply_markup=payment_keyboard(price)
     )

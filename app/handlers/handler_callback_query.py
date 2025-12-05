@@ -1,10 +1,10 @@
-from aiogram import Bot, Router, F
+from aiogram import Router, F
 from aiogram.types import CallbackQuery
-from app.keyboard import back_to_menu, start_menu, select_pay, select_model_keyboard, subscriptions, payment_card
+from app.keyboard import back_to_menu, start_menu, select_pay, select_model_keyboard, subscriptions
 from app.pay.star_pay import create_star_payment
+from app.pay.card_pay import create_card_payment
 from data.sql.request import is_vip, get_model, set_model, get_user, get_vip_type, get_end_subscriptions
 from app.handlers.texts import INFO_TEXT
-from app.pay.card_pay import create_pay_link
 from datetime import datetime
 
 callback_query_router = Router()
@@ -23,14 +23,13 @@ async def profile_callback(callback: CallbackQuery):
 Подписка: {vip_type.capitalize()}
 Текущая модель: {model_dict.get(user.model)}
 Конец подписки: {datetime.fromtimestamp(end_subscriptions).strftime("%d.%m.%Y") if end_subscriptions else None}
-""")
+""", reply_markup=back_to_menu)
     else:
         await callback.message.edit_text(
     f"""ID: {id}
 Подписка: Отсутствует
 Токены: {user.balance}/{user.day_limit} (пополнение в 0:00 по МСК)
-Текущая модель: {model_dict.get(user.model)}""", reply_markup=back_to_menu
-)
+Текущая модель: {model_dict.get(user.model)}""", reply_markup=back_to_menu)
 
 @callback_query_router.callback_query(F.data == "back")
 async def go_to_menu_callback(callback: CallbackQuery):
@@ -68,18 +67,10 @@ async def buy_vip_for_stars(callback: CallbackQuery):
     await callback.answer()
 
 @callback_query_router.callback_query(F.data.startswith("card_"))
-async def buy_vip_for_card(callback: CallbackQuery, bot: Bot):
+async def buy_vip_for_card(callback: CallbackQuery):
     subscription = callback.data.split('_', maxsplit=1)[1]
-    bot_info = await bot.get_me()
-    link = await create_pay_link(
-        tg_id=callback.from_user.id,
-        subscription=subscription,
-        username_bot=bot_info.username
-    )
-    await callback.message.edit_text(
-        "Ссылка на оплату создана.\nДля оплаты подписки нажмите на кнопку ниже ⬇️",
-        reply_markup=payment_card(link)
-        )
+    await create_card_payment(message=callback.message, subscription=subscription)
+    await callback.answer()
 
 @callback_query_router.callback_query(F.data == "select_model")
 async def select_model(callback: CallbackQuery):

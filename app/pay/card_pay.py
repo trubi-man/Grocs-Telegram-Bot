@@ -1,11 +1,9 @@
-from aiomoney import YooMoney
-from aiomoney.schemas import InvoiceSource
+from aiogram.types import LabeledPrice, Message
 from app.pay.subcription_data import Subscription
-from config import YOOMONEY_SECRET
+from app.keyboard import payment_keyboard
+from config import PROVIDER_TOKEN
 
-yoo_money = YooMoney(access_token=YOOMONEY_SECRET)
-
-async def create_pay_link(subscription: str, username_bot: str, tg_id: int):
+async def create_card_payment(message: Message, subscription: str):
     for sub in Subscription:
         sub_data = sub.value
         if sub_data.type_sub == subscription:
@@ -15,11 +13,15 @@ async def create_pay_link(subscription: str, username_bot: str, tg_id: int):
 
     if not price:
         raise Exception("Price cannot be None")
+    
+    prices = [LabeledPrice(label="RUB", amount=price * 100)]
 
-    pay_form = await yoo_money.create_invoice(
-        amount_rub=price,
-        label=f"{subscription}:{daily_limit}:{tg_id}",
-        payment_source=InvoiceSource.YOOMONEY_WALLET,
-        success_redirect_url=f"https://t.me/{username_bot}"
+    await message.answer_invoice(
+        title=f"Подписка {subscription.capitalize()}",
+        description=f"Подписка {subscription.capitalize()} на 30 дней за {price} \u20BD",
+        provider_token=PROVIDER_TOKEN,
+        currency="RUB",
+        prices=prices,
+        payload=f"test:{subscription}:{daily_limit}",
+        reply_markup=payment_keyboard(amount=price, is_star=False)
     )
-    return pay_form.url
