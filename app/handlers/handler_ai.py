@@ -31,7 +31,7 @@ async def update_inline_message_handler(callback_query: CallbackQuery):
     await is_register_user(owner_query)
     model = await get_model(owner_query)
     balance = await get_balance(owner_query)
-    price = prices.get(model, 10)
+    price = prices.get(model)
 
     if balance > price:
         query = await redis_manager.get_query(owner_query)
@@ -42,22 +42,23 @@ async def update_inline_message_handler(callback_query: CallbackQuery):
             inline_message_id=inline_message_id,
             text=f"Начинаем генерацию по модели {model}..."
         )
+        await reduce_balance(tg_id=owner_query, reduce=price)
         await callback_query.bot.edit_message_text(
             inline_message_id=inline_message_id,
             text=await generate_ai_response(tg_id=owner_query, query=query, model=model), parse_mode='HTML'
         )
-        await reduce_balance(tg_id=owner_query, reduce=price)
     else:
         await callback_query.bot.edit_message_text(inline_message_id=inline_message_id, text="У вас закончились запросы, вы можете купить подписку в боте.")
 
 @ai_router.message(F.text)
 async def generate_message(message: Message):
     tg_id = message.from_user.id
+    model = await get_model(tg_id)
+    price = prices.get(model)
     balance = await get_balance(tg_id)
-    if balance > 0:
-        model = await get_model(tg_id)
+    if balance > price:
         answer = await message.answer(text=f"Начинаем генерацию по модели {model}...")
-        await reduce_balance(tg_id=tg_id, reduce=1)
+        await reduce_balance(tg_id=tg_id, reduce=price)
         await answer.edit_text(text=await generate_ai_response(tg_id=message.from_user.id, query=message.text, model=model), parse_mode='HTML')
     else:
         await message.answer("У вас закончились запросы, вы можете купить подписку в боте.", parse_mode='HTML')
