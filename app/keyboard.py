@@ -7,7 +7,7 @@ def start_menu(vip: bool):
     ]
     
     if not vip:
-        keyboard.append([InlineKeyboardButton(text="Купить VIP", callback_data="buy_vip")])
+        keyboard.append([InlineKeyboardButton(text="Подписки", callback_data="buy_vip")])
     
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 

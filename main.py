@@ -16,8 +16,8 @@ async def daily_limit_update():
     while True:
         now = datetime.datetime.now()
         if now.hour == 0 and now.minute == 0:
-            await check_and_clean_subscriptions()
             await update_all_limit()
+            await check_and_clean_subscriptions()
             print("успех")
             await asyncio.sleep(61)
         else:

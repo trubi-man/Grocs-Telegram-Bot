@@ -19,7 +19,7 @@ async def profile_callback(callback: CallbackQuery):
         end_subscriptions = await get_end_subscriptions(id)
 
         await callback.message.edit_text(f"""ID: {id}
-Токены: {user.balance}/{user.day_limit} (пополнение в 0:00 по МСК)
+Кредиты: {user.balance}/{user.day_limit} (пополнение в 0:00 по МСК)
 Подписка: {vip_type.capitalize()}
 Текущая модель: {model_dict.get(user.model)}
 Конец подписки: {datetime.fromtimestamp(end_subscriptions).strftime("%d.%m.%Y") if end_subscriptions else None}
@@ -28,7 +28,7 @@ async def profile_callback(callback: CallbackQuery):
         await callback.message.edit_text(
     f"""ID: {id}
 Подписка: Отсутствует
-Токены: {user.balance}/{user.day_limit} (пополнение в 0:00 по МСК)
+Кредиты: {user.balance}/{user.day_limit} (пополнение в 0:00 по МСК)
 Текущая модель: {model_dict.get(user.model)}""", reply_markup=back_to_menu)
 
 @callback_query_router.callback_query(F.data == "back")
@@ -38,21 +38,22 @@ async def go_to_menu_callback(callback: CallbackQuery):
 
 @callback_query_router.callback_query(F.data == "buy_vip")
 async def select_pay_callback(callback: CallbackQuery):
-    await callback.message.edit_text("""
+    await callback.message.edit_text("""Выберите тип подписки:\n
 💎 <b>STANDARD</b>
-┌ 130 токенов в день
-├ 3 900 токенов в месяц
+┌ 130 кредитов в день
 └ <b>99 (руб/stars)/месяц</b>
 
 🚀 <b>PRO</b>  
-┌ 400 токенов в день
-├ 12 000 токенов в месяц
+┌ 400 кредитов в день
 └ <b>299 (руб/stars)/месяц</b>
 
 👑 <b>PREMIUM</b>
-┌ 1 000 токенов в день
-├ 30 000 токенов в месяц
+┌ 1 000 кредитов в день
 └ <b>599 (руб/stars)/месяц</b>
+\n<i>💡 <b>Информация:</b>
+1 кредит = 1 запрос к базовой модели(Venice Small), другие модели стоят дороже (например, Gemma 3 27B стоит 2 кредита за запрос).
+При покупке подписка предоставляется на 30 дней.
+Кредиты обновляются каждый день в 00:00 по МСК.</i>
 """, reply_markup=subscriptions, parse_mode='HTML')
 
 @callback_query_router.callback_query(F.data.startswith("sub_"))
@@ -76,7 +77,7 @@ async def buy_vip_for_card(callback: CallbackQuery):
 async def select_model(callback: CallbackQuery):
     model = await get_model(callback.from_user.id)
     await callback.message.edit_text(f"""В данный момент у вас модель {model_dict.get(model)}.\n
-Выберите новую модель(в скобках указана цена за 1 токен):\n
+Выберите модель(в скобках указана цена за 1 запрос в кредитах):\n
 1. OpenAI GPT OSS 120B(2) - Открытая модель от OpenAI, подходит для разных задач.\n
 2. Gemma 3 27B(2) - Модель от Google, хороша для программирования и анализа.\n
 3. Venice Small(1) - Экономный вариант для простых задач. Под капотом qwen3-4b.\n
