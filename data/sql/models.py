@@ -1,9 +1,10 @@
 from sqlalchemy import BigInteger
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncAttrs, create_async_engine, async_sessionmaker
+from config import SQL_PASSWORD
 
 engine = create_async_engine(
-    url="sqlite+aiosqlite:///ai_tg_bot.db",
+    url=f"postgresql+asyncpg://grocs:{SQL_PASSWORD}@localhost/grocs_db",
     echo=False
 )
 

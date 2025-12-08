@@ -22,6 +22,6 @@ async def create_card_payment(message: Message, subscription: str):
         provider_token=PROVIDER_TOKEN,
         currency="RUB",
         prices=prices,
-        payload=f"test:{subscription}:{daily_limit}",
+        payload=f"subscription:{subscription}:{daily_limit}",
         reply_markup=payment_keyboard(amount=price, is_star=False)
     )

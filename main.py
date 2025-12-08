@@ -8,9 +8,9 @@ from data.sql.request import check_and_clean_subscriptions, update_all_limit
 from config import BOT_TG
 import asyncio
 import datetime
-import logging
+# import logging
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 async def daily_limit_update():
     while True:
@@ -18,7 +18,6 @@ async def daily_limit_update():
         if now.hour == 0 and now.minute == 0:
             await update_all_limit()
             await check_and_clean_subscriptions()
-            print("успех")
             await asyncio.sleep(61)
         else:
             await asyncio.sleep(58)

@@ -1,17 +1,17 @@
 from aiogram import Router, F
 from aiogram.types import Message, PreCheckoutQuery
 from datetime import datetime, timedelta
-from data.sql.request import set_subscription#, is_vip
+from data.sql.request import set_subscription, is_vip
 
 payment_router = Router()
 
 @payment_router.pre_checkout_query()
 async def pre_checkout_handler(pre_checkout_query: PreCheckoutQuery):
-    # vip = await is_vip(pre_checkout_query.from_user.id)
-    # if vip:
-    #     await pre_checkout_query.answer(ok=False)
-    # else:
-    await pre_checkout_query.answer(ok=True)
+    vip = await is_vip(pre_checkout_query.from_user.id)
+    if vip:
+        await pre_checkout_query.answer(ok=False)
+    else:
+        await pre_checkout_query.answer(ok=True)
 
 @payment_router.message(F.successful_payment)
 async def successful_payment_handler(message: Message):
